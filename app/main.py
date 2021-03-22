@@ -16,7 +16,7 @@ class ItemModel(db.Model):
     price = db.Column(db.Float, nullable=False)
     
     def __repr__(self):
-        return f"Item(itemId = {id}, name = {name}, price= {price})"
+        return f"Item(itemId = {id}, name = {self.name}, price= {self.price})"
 
 item_put_args = reqparse.RequestParser()
 item_put_args.add_argument("name", type=str, help="Name des Artikels "+
