@@ -1,8 +1,10 @@
+import uuid
 from flask import Flask, request
 from flask_restful import Api, Resource, reqparse, abort, fields, marshal_with
 from flask_sqlalchemy import SQLAlchemy
 from jose import jwt, exceptions
 
+service_id = None
 app = Flask(__name__)
 api = Api(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
@@ -151,11 +153,15 @@ def register_with_registry():
 
     SERVICE_ADDRESS = local_ip or "localhost"
 
+    global service_id
+    service_id = str(uuid.uuid4())
+
     try:
         consul = consulate.Consul(host=DISCOVERY_ADDRESS, port=DISCOVERY_PORT, scheme=DISCOVERY_SCHEME)
 
         # Add a service to the local agent
         consul.agent.service.register('users',
+                                      service_id=service_id,
                                       port=SERVICE_PORT,
                                       address=SERVICE_ADDRESS)
         print("[INFO] Registered with Service Registry!")
